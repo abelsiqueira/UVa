@@ -1,2 +1,17 @@
 High School Physics
 ---------------------------
+Considering t0 = 0, x0 = 0 and v0 = 0, we have
+
+v(t) = a*t
+x(t) = 0.5*a*t^2
+
+Since v(t1) = v1 is given we have
+
+a = v1/t1
+
+and since we want x(2*t1), we have
+
+x(2*t1) = 0.5*(v1/t1)*(2*t1)^2 = 2*v1*t1
+
+Submit 1
+- Accepted
