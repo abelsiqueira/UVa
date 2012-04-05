@@ -1,5 +1,4 @@
 all:
-	g++ -o main main.cpp
-	./main < test1.in > test1.out
-	diff -s test1.out test1.sol
-	rm -f main test1.out
+	g++ -o main main.cpp -lm -lcrypt -O2 -pipe -ansi -DONLINE_JUDGE
+	./runtests.sh
+	rm -f main *.out

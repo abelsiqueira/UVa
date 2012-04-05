@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 
@@ -8,7 +9,7 @@ int main () {
     cin >> x >> y;
     if (cin.eof())
       break;
-    cout << y - x << endl;
+    cout << fabs(y - x) << endl;
   }
   return 0;
 }
