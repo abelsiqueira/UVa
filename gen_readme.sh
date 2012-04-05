@@ -11,3 +11,4 @@ do
   echo " " >> README.md
   echo " " >> README.md
 done
+chmod -w README.md
