@@ -43,6 +43,11 @@ class Vector3 {
       v[1] = P.get(2)*Q.get(0) - P.get(0)*Q.get(2);
       v[2] = P.get(0)*Q.get(1) - P.get(1)*Q.get(0);
     }
+    void normal (const Vector3 P1, Vector3 P2, Vector3 P3) {
+      P2.axpy(-1,P1);
+      P3.axpy(-1,P1);
+      cross(P2, P3);
+    }
     float norm () const {
       float n = 0;
       for (size_t i = 0; i < 3; i++)
@@ -84,10 +89,20 @@ float upper_bound (Vector3 *P, Vector3 *Q) {
 }
 
 float solve (Vector3 *P, Vector3 *Q) {
-  float d = 1e9, t = 0.0;
-  for (size_t i = 1; i < 4; i++) {
-    P[i].axpy(-1,P[0]);
-    Q[i].axpy(-1,Q[0]);
+  float d = upper_bound(P, Q), t = 0.0;
+  Vector3 normal;
+  for (size_t i = 0; i < 4; i++) {
+    for (size_t j = i+1; j < 4; j++) {
+      for (size_t k = j+1; k < 4; k++ ) {
+        // Point P[i], P[j] and P[k] form the plane
+        normal.normal(P[i], P[j], P[k]);
+        for (size_t q = 0; q < 4; q++) {
+          t = distance_to_plane (normal, P[i], Q[q]);
+          if (t < d)
+            d = t;
+        }
+      }
+    }
   }
   return sqrt(d);
 }
@@ -109,7 +124,7 @@ int main () {
       cin >> x >> y >> z;
       Q[i].set(x,y,z);
     }
-    d = upper_bound (P, Q);
+    d = solve (P, Q);
     printf ("%0.2f\n", d);
   }
 }
