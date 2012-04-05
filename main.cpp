@@ -7,7 +7,7 @@ using namespace std;
 
 class Vector3 {
   public:
-    Vector3 (int a = 0, int b = 0, int c = 0) {
+    Vector3 (float a = 0, float b = 0, float c = 0) {
       v[0] = a;
       v[1] = b;
       v[2] = c;
@@ -17,23 +17,27 @@ class Vector3 {
         v[i] = P.get(i);
     }
     ~Vector3 () { }
-
     void operator=(const Vector3 & P) {
       for (size_t i = 0; i < 3; i++)
         v[i] = P.get(i);
     }
 
+    void print () {
+      for (size_t i = 0; i < 3; i++)
+        cout << v[i] << ' ';
+      cout << endl;
+    }
     void reset () {
       v[0] = 0;
       v[1] = 0;
       v[2] = 0;
     }
-    void set (int a, int b, int c) {
+    void set (float a, float b, float c) {
       v[0] = a;
       v[1] = b;
       v[2] = c;
     }
-    int get (int i) const {
+    float get (int i) const {
       return v[i];
     }
     float sqrdist (const Vector3 & P) {
@@ -69,7 +73,7 @@ class Vector3 {
       return sqrt(n);
     }
     float sqrnorm () const {
-      float n = 0;
+      float n = 0.0;
       for (size_t i = 0; i < 3; i++)
         n += v[i]*v[i];
       return n;
@@ -81,7 +85,7 @@ class Vector3 {
       return d;
     }
   private:
-    int v[3];
+    float v[3];
 };
 
 float distance_to_plane (const Vector3 & normal, const Vector3 & planePoint, 
@@ -104,7 +108,7 @@ float upper_bound (Vector3 *P, Vector3 *Q) {
 
 float solve (Vector3 *P, Vector3 *Q) {
   float d = 1e9, t = 0.0;
-  float step = 1.0;
+  float step = 0.025;
   Vector3 distance;
   for (size_t i = 1; i < 4; i++) {
     P[i].axpy(-1, P[0]);
@@ -116,16 +120,17 @@ float solve (Vector3 *P, Vector3 *Q) {
     for (  float a2 = 0; a2 <= 1.0; a2 += step) {
       for (float a3 = 0; a3 <= 1.0; a3 += step) {
         if (a1 + a2 + a3 > 1.0)
-          continue;
+          break;
         for (    float b1 = 0; b1 <= 1.0; b1 += step) {
           for (  float b2 = 0; b2 <= 1.0; b2 += step) {
             for (float b3 = 0; b3 <= 1.0; b3 += step) {
               if (b1 + b2 + b3 > 1.0)
-                continue;
-              distance = b;
+                break;
+              distance = P[0];
               distance.axpy(a1, P[1]);
               distance.axpy(a2, P[2]);
               distance.axpy(a3, P[3]);
+              distance.axpy(-1, Q[0]);
               distance.axpy(-b1, Q[1]);
               distance.axpy(-b2, Q[2]);
               distance.axpy(-b3, Q[3]);
