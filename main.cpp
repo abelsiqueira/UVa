@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdio>
+#include <cmath>
 
 using namespace std;
 
@@ -17,12 +18,47 @@ class Vector3 {
       v[1] = b;
       v[2] = c;
     }
+    int get (int i) const {
+      return v[i];
+    }
+    float sqrdist (const Vector3 & P) {
+      float d = pow(v[0] - P.get(0), 2) +
+        pow(v[1] - P.get(1), 2) +
+        pow(v[2] - P.get(2), 2);
+      return d;
+    }
+    float dist (const Vector3 & P) {
+      float d = pow(v[0] - P.get(0), 2) +
+        pow(v[1] - P.get(1), 2) +
+        pow(v[2] - P.get(2), 2);
+      return sqrt(d);
+    }
   private:
     int v[3];
 };
 
+float upper_bound (Vector3 *P, Vector3 *Q) {
+  float d = 1e9, t = 0.0;
+  for (size_t i = 0; i < 4; i++) {
+    for (size_t j = 0; j < 4; j++) {
+      t = P[i].sqrdist(Q[j]);
+      if (t < d)
+        d = t;
+    }
+  }
+  return sqrt(d);
+}
+
 float solve (Vector3 *P, Vector3 *Q) {
-  return 1.0;
+  float d = 1e9, t = 0.0;
+  for (size_t i = 0; i < 4; i++) {
+    for (size_t j = 0; j < 4; j++) {
+      t = P[i].sqrdist(Q[j]);
+      if (t < d)
+        d = t;
+    }
+  }
+  return sqrt(d);
 }
 
 int main () {
@@ -42,7 +78,7 @@ int main () {
       cin >> x >> y >> z;
       Q[i].set(x,y,z);
     }
-    d = solve (P, Q);
+    d = upper_bound (P, Q);
     printf ("%0.2f\n", d);
   }
 }
