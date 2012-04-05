@@ -1,0 +1,14 @@
+UVa Problems
+============
+ 
+Star War
+--------
+Transforming the problem to
+min ||P + a1*v1 + a2*v2 + a3*v3 - Q - b1*w1 - b2*w2 - b3*w3||^2
+s.t a1 + a2 + a3 <= 1
+    b1 + b2 + b3 <= 1
+    a1, a2, a3, b1, b2, b3 >= 0
+A solution was found dividing the interval [0,1] into several parts
+and evaluating each variable in these points.
+This solution is terrible and slow.
+The mathematical approach may be too slow.
