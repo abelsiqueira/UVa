@@ -33,6 +33,11 @@ class Vector3 {
         pow(v[2] - P.get(2), 2);
       return sqrt(d);
     }
+    template < typename number >
+    void axpy (number alpha, const Vector3 & P) {
+      for (size_t i = 0; i < 3; i++)
+        v[i] += alpha*P.get(i);
+    }
   private:
     int v[3];
 };
@@ -51,12 +56,9 @@ float upper_bound (Vector3 *P, Vector3 *Q) {
 
 float solve (Vector3 *P, Vector3 *Q) {
   float d = 1e9, t = 0.0;
-  for (size_t i = 0; i < 4; i++) {
-    for (size_t j = 0; j < 4; j++) {
-      t = P[i].sqrdist(Q[j]);
-      if (t < d)
-        d = t;
-    }
+  for (size_t i = 1; i < 4; i++) {
+    P[i].axpy(-1,P[0]);
+    Q[i].axpy(-1,Q[0]);
   }
   return sqrt(d);
 }
