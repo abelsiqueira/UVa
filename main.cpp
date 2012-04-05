@@ -104,7 +104,7 @@ float upper_bound (Vector3 *P, Vector3 *Q) {
 
 float solve (Vector3 *P, Vector3 *Q) {
   float d = 1e9, t = 0.0;
-  float step = 0.49;
+  float step = 1.0;
   Vector3 distance;
   for (size_t i = 1; i < 4; i++) {
     P[i].axpy(-1, P[0]);
@@ -112,12 +112,16 @@ float solve (Vector3 *P, Vector3 *Q) {
   }
   Vector3 b(P[0]);
   b.axpy(-1, Q[0]);
-  for (float a1 = 0; a1 <= 1; a1 += step) {
-    for (float a2 = 0; a2 <= 1 - a1; a2 += step) {
-      for (float a3 = 0; a3 <= 1 - a1 - a2; a3 += step) {
-        for (float b1 = 0; b1 <= 1; b1 += step) {
-          for (float b2 = 0; b2 <= 1 - b1; b2 += step) {
-            for (float b3 = 0; b3 <= 1 - b1 - b2; b3 += step) {
+  for (    float a1 = 0; a1 <= 1.0; a1 += step) {
+    for (  float a2 = 0; a2 <= 1.0; a2 += step) {
+      for (float a3 = 0; a3 <= 1.0; a3 += step) {
+        if (a1 + a2 + a3 > 1.0)
+          continue;
+        for (    float b1 = 0; b1 <= 1.0; b1 += step) {
+          for (  float b2 = 0; b2 <= 1.0; b2 += step) {
+            for (float b3 = 0; b3 <= 1.0; b3 += step) {
+              if (b1 + b2 + b3 > 1.0)
+                continue;
               distance = b;
               distance.axpy(a1, P[1]);
               distance.axpy(a2, P[2]);
