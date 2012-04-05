@@ -1,4 +1,7 @@
 #include <iostream>
+#include <cstdio>
+
+using namespace std;
 
 class Vector3 {
   public:
@@ -10,9 +13,9 @@ class Vector3 {
     ~Vector3 () { }
 
     void set (int a, int b, int c) {
-      V[0] = a;
-      V[1] = b;
-      V[2] = c;
+      v[0] = a;
+      v[1] = b;
+      v[2] = c;
     }
   private:
     int v[3];
