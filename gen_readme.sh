@@ -8,4 +8,6 @@ echo " " >> README.md
 find ./ -name STATUS | while read FILENAME
 do
   cat "$FILENAME" >> README.md
+  echo " " >> README.md
+  echo " " >> README.md
 done

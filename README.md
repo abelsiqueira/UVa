@@ -1,6 +1,16 @@
 UVa Problems
 ============
  
+Hashmat
+-------
+Submit 1
+- Fail due to TIME LIMIT
+Submit 2
+- Fail due to TIME LIMIT
+Submit 3
+- Accepted
+ 
+ 
 Star War
 --------
 Transforming the problem to
@@ -12,3 +22,5 @@ A solution was found dividing the interval [0,1] into several parts
 and evaluating each variable in these points.
 This solution is terrible and slow.
 The mathematical approach may be too slow.
+ 
+ 
