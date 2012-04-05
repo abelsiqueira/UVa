@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdio>
 #include <cmath>
+#include <cassert>
 
 using namespace std;
 
@@ -11,8 +12,22 @@ class Vector3 {
       v[1] = b;
       v[2] = c;
     }
+    Vector3 (const Vector3 & P) {
+      for (size_t i = 0; i < 3; i++)
+        v[i] = P.get(i);
+    }
     ~Vector3 () { }
 
+    void operator=(const Vector3 & P) {
+      for (size_t i = 0; i < 3; i++)
+        v[i] = P.get(i);
+    }
+
+    void reset () {
+      v[0] = 0;
+      v[1] = 0;
+      v[2] = 0;
+    }
     void set (int a, int b, int c) {
       v[0] = a;
       v[1] = b;
@@ -33,8 +48,7 @@ class Vector3 {
         pow(v[2] - P.get(2), 2);
       return sqrt(d);
     }
-    template < typename number >
-    void axpy (number alpha, const Vector3 & P) {
+    void axpy (float alpha, const Vector3 & P) {
       for (size_t i = 0; i < 3; i++)
         v[i] += alpha*P.get(i);
     }
@@ -89,17 +103,33 @@ float upper_bound (Vector3 *P, Vector3 *Q) {
 }
 
 float solve (Vector3 *P, Vector3 *Q) {
-  float d = upper_bound(P, Q), t = 0.0;
-  Vector3 normal;
-  for (size_t i = 0; i < 4; i++) {
-    for (size_t j = i+1; j < 4; j++) {
-      for (size_t k = j+1; k < 4; k++ ) {
-        // Point P[i], P[j] and P[k] form the plane
-        normal.normal(P[i], P[j], P[k]);
-        for (size_t q = 0; q < 4; q++) {
-          t = distance_to_plane (normal, P[i], Q[q]);
-          if (t < d)
-            d = t;
+  float d = 1e9, t = 0.0;
+  float step = 0.49;
+  Vector3 distance;
+  for (size_t i = 1; i < 4; i++) {
+    P[i].axpy(-1, P[0]);
+    Q[i].axpy(-1, Q[0]);
+  }
+  Vector3 b(P[0]);
+  b.axpy(-1, Q[0]);
+  for (float a1 = 0; a1 <= 1; a1 += step) {
+    for (float a2 = 0; a2 <= 1 - a1; a2 += step) {
+      for (float a3 = 0; a3 <= 1 - a1 - a2; a3 += step) {
+        for (float b1 = 0; b1 <= 1; b1 += step) {
+          for (float b2 = 0; b2 <= 1 - b1; b2 += step) {
+            for (float b3 = 0; b3 <= 1 - b1 - b2; b3 += step) {
+              distance = b;
+              distance.axpy(a1, P[1]);
+              distance.axpy(a2, P[2]);
+              distance.axpy(a3, P[3]);
+              distance.axpy(-b1, Q[1]);
+              distance.axpy(-b2, Q[2]);
+              distance.axpy(-b3, Q[3]);
+              t = distance.sqrnorm();
+              if (t < d)
+                d = t;
+            }
+          }
         }
       }
     }
