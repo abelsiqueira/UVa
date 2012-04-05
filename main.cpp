@@ -106,7 +106,7 @@ float upper_bound (Vector3 *P, Vector3 *Q) {
   return sqrt(d);
 }
 
-float solve (Vector3 *P, Vector3 *Q) {
+float grid_all_combination (Vector3 *P, Vector3 *Q) {
   float d = 1e9, t = 0.0;
   float step = 0.025;
   Vector3 distance;
@@ -117,15 +117,11 @@ float solve (Vector3 *P, Vector3 *Q) {
   Vector3 b(P[0]);
   b.axpy(-1, Q[0]);
   for (    float a1 = 0; a1 <= 1.0; a1 += step) {
-    for (  float a2 = 0; a2 <= 1.0; a2 += step) {
-      for (float a3 = 0; a3 <= 1.0; a3 += step) {
-        if (a1 + a2 + a3 > 1.0)
-          break;
+    for (  float a2 = 0; a2 <= 1.0 - a1; a2 += step) {
+      for (float a3 = 0; a3 <= 1.0 - a1 - a2; a3 += step) {
         for (    float b1 = 0; b1 <= 1.0; b1 += step) {
-          for (  float b2 = 0; b2 <= 1.0; b2 += step) {
-            for (float b3 = 0; b3 <= 1.0; b3 += step) {
-              if (b1 + b2 + b3 > 1.0)
-                break;
+          for (  float b2 = 0; b2 <= 1.0 - b1; b2 += step) {
+            for (float b3 = 0; b3 <= 1.0 - b1 - b2; b3 += step) {
               distance = P[0];
               distance.axpy(a1, P[1]);
               distance.axpy(a2, P[2]);
@@ -144,6 +140,10 @@ float solve (Vector3 *P, Vector3 *Q) {
     }
   }
   return sqrt(d);
+}
+
+float solve (Vector3 *P, Vector3 *Q) {
+  return grid_all_combination (P, Q);
 }
 
 int main () {
