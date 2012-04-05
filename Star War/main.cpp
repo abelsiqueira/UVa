@@ -142,8 +142,31 @@ float grid_all_combination (Vector3 *P, Vector3 *Q) {
   return sqrt(d);
 }
 
+float calc_sqrdist(Vector3 *P, Vector3 *Q, const Vector3 & a, const Vector3 & b) {
+  Vector3 distance = P[0];
+  distance.axpy(-1, Q[0]);
+  for (size_t i = 0; i < 3; i++) {
+    distance.axpy(a.get(i), P[i+1]);
+    distance.axpy(-b.get(i), Q[i+1]);
+  }
+  return distance.sqrnorm();
+}
+
 float solve (Vector3 *P, Vector3 *Q) {
-  return grid_all_combination (P, Q);
+  Vector3 a(0,0,0), b(0,0,0);
+  enum directions {e1, e2, e3, e4, e5, e6};
+  directions best_direction;
+  float step = 1, minStep = pow(2,-3);
+  float dist = 1e9, temp = 0.0;
+
+  while (step > minStep) {
+    bool found_direction = false;
+
+    for (size_t d = 0; d < 3; d++) {
+    }
+    if (!found_direction)
+      step /= 2.0;
+  }
 }
 
 int main () {
