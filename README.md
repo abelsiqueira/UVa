@@ -11,6 +11,10 @@ Submit 3
 - Accepted
  
  
+Decoder
+---------------------------
+ 
+ 
 Star War
 --------
 Transforming the problem to
@@ -38,6 +42,17 @@ a = v1/t1
 and since we want x(2*t1), we have
 
 x(2*t1) = 0.5*(v1/t1)*(2*t1)^2 = 2*v1*t1
+
+Submit 1
+- Accepted
+ 
+ 
+Ecological Premium
+---------------------------
+The premium: divide the area(A) by the number of animals(N),
+multiply by the env-friendliness(E), and multiply by the
+animals (again?).
+Result: A*E
 
 Submit 1
 - Accepted
