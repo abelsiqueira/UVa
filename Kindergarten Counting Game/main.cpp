@@ -12,7 +12,7 @@ int getwordintext (char *word, char *text, size_t s) {
     if (s + j == 256)
       break;
     c = text[s+j];
-    if ((c == ' ') || (c == 0))
+    if ((c == ' ') || (c == 0) || ( (c >= 48) && (c <= 57) ))
       break;
     word[j] = c;
   }

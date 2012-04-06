@@ -11,6 +11,14 @@ Submit 3
 - Accepted
  
  
+Kindergarten Counting Game
+---------------------------
+Submit 1
+- Wrong answer
+Submit 2
+- Accepted. Apparently ab1cd are two words (ab and cd).
+ 
+ 
 Decoder
 ---------------------------
 Submit 1
