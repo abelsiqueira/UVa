@@ -31,3 +31,4 @@ M -- is a mirrored palindrome.
 2 -- is a regular palindrome.
 
 4 -- is a regular palindrome.
+

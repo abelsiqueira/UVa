@@ -4,3 +4,5 @@ Submit 1
 - Wrong answer
 Submit 2
 - Wrong answer
+Submit 3
+- Accepted answer. (Was not resetting booleans and forgot endline).

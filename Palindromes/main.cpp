@@ -81,14 +81,9 @@ int main () {
   char aux[256];
   bool is_palin = false;
   bool is_mirror = false;
-  bool first = true;
   while (cin.getline(text, 256)) {
-    if (!first) {
-      cout << endl;
-    }
     is_palin = false;
     is_mirror = false;
-    first = false;
     reverse (text, aux);
     is_palin = iguais(text, aux);
     if (mirror (text, aux))
@@ -102,6 +97,7 @@ int main () {
       cout << "is a mirrored string." << endl;
     else
       cout << "is not a palindrome." << endl;
+    cout << endl;
   }
   return 0;
 }
