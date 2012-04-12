@@ -248,97 +248,75 @@ bool will_be_feasible (const Vector3 & s, float step, const Vector3 & d) {
 
 float solve (Vector3 *P, Vector3 *Q) {
   Vector3 *SDs;
-  size_t n = 6;
+  size_t n = 15;
+  float athird=1.0/3.0;
   SDs = new Vector3[n];
-//  SDs[0].set(1, 0, 0);
-//  SDs[1].set(0, 1, 0);
-//  SDs[2].set(0, 0, 1);
-  for (size_t i = 0; i < n; i++)
-    SDs[i].set(drand(), drand(), drand());
-//  SDs[3].set(-1, 0, 0);
-//  SDs[4].set(0, -1, 0);
-//  SDs[5].set(0, 0, -1);
-//  SDs[3].set(-1, 1, -1);
-//  SDs[4].set(-1, -1, 1);
-//  SDs[5].set(1, -1, -1);
-//  SDs[6].set(1, -1, 1);
-//  SDs[7].set(-1, 1, 1);
-//  SDs[8].set(1, 1, -1);
+//  for (size_t i = 0; i < n; i++)
+//    SDs[i].set(drand(), drand(), drand());
+  //Setting movements for faces.
+  SDs[0].set(1, 0, 0);
+  SDs[1].set(0, 1, 0);
+  SDs[2].set(0, 0, 1);
+  SDs[3].set(-1,0,0);
+  SDs[4].set(0,-1,0);
+  SDs[5].set(0,0,-1);
+  SDs[6].set(0.5,-0.5,0);
+  SDs[7].set(-0.5,0.5,0);
+  SDs[8].set(0.5,0,-0.5);
+  SDs[9].set(-0.5,0,0.5);
+  SDs[10].set(0,0.5,-0.5);
+  SDs[11].set(0,-0.5,0.5);
+  SDs[12].set(2*athird,-athird,-athird);
+  SDs[13].set(-athird,2*athird,-athird);
+  SDs[14].set(-athird,-athird,2*athird);
   for (size_t i = 1; i < 4; i++) {
     P[i].axpy(-1, P[0]);
     Q[i].axpy(-1, Q[0]);
   }
-  double step=1.0;
+  double step=1.0, minstep = 2e-6;
   double d=1e9, t=0.0;
   Vector3 a(0,0,0), b(0,0,0);
   Vector3 direction(0,0,0);
+  bool fast = true;
 
-//  for (size_t i = 0; i < 3; i++)
-//    cout << a.get(i) << ",";
-//  for (size_t i = 0; i < 3; i++)
-//    cout << b.get(i) << ",";
-//  cout << endl;
-  while (step > 2e-8) {
+  while (step > minstep) {
     bool decreased = false;
     size_t besti = 0;
     for (size_t i = 0; i < n; i++) {
+      if (fast && decreased) continue;
       if (will_be_feasible(a, step, SDs[i]))
         a.axpy(step,SDs[i]);
       else
         continue;
-//      direction = P[0];
-//      direction.axpy(-1,Q[0]);
-//      direction = P[0] - Q[0];
-//      for (size_t j = 0; j < 3; j++) {
-//        direction.axpy(a.get(j), P[j+1]);
-//        direction.axpy(-b.get(j), Q[j+1]);
-//      }
-//      t = direction.sqrnorm();
       t = calc_sqrdist(P,Q,a,b);
       if (t < d) {
         besti = i;
         d = t;
         decreased = true;
-        a.axpy(-step,SDs[i]);
-//        break;
-      } else
-        a.axpy(-step,SDs[i]);
+      }
+      a.axpy(-step,SDs[i]);
     }
     for (size_t i = 0; i < n; i++) {
+      if (fast && decreased) continue;
       if (will_be_feasible(b, step, SDs[i]))
         b.axpy(step,SDs[i]);
       else
         continue;
-//      direction = P[0];
-//      direction.axpy(-1,Q[0]);
-//      direction = P[0] - Q[0];
-//      for (size_t j = 0; j < 3; j++) {
-//        direction.axpy(a.get(j), P[j+1]);
-//        direction.axpy(-b.get(j), Q[j+1]);
-//      }
-//      t = direction.sqrnorm();
       t = calc_sqrdist(P,Q,a,b);
       if (t < d) {
         besti = n + i;
-        b.axpy(-step,SDs[i]);
         d = t;
         decreased = true;
-//        break;
-      } else 
-        b.axpy(-step,SDs[i]);
+      }
+      b.axpy(-step,SDs[i]);
     }
-    if (!decreased)
-      step /= 2;
-    else {
+    if (!decreased) {
+      step = step/2.0;
+    } else {
       if (besti < n)
         a.axpy(step, SDs[besti]);
       else
         b.axpy(step, SDs[besti - n]);
-//      for (size_t i = 0; i < 3; i++)
-//        printf("%5.2lf,", a.get(i));
-//      for (size_t i = 0; i < 3; i++)
-//        printf("%5.2lf,", b.get(i));
-//      cout << endl;
     }
   }
   return sqrt(d);
