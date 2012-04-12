@@ -1,11 +1,10 @@
-all:
-	g++ -o main main.cpp -lm -lcrypt -O2 -pipe -DONLINE_JUDGE
-	time ./main < test1.in > test1.out
-	diff -s test1.sol test1.out
-	rm -f main
+all: compile run purge
 
-test:
-	g++ -o main main.cpp -lm -lcrypt -O2 -pipe -DONLINE_JUDGE
-	time ./main < test2.in > test2.out
-	diff -s test2.sol test2.out
-	rm -f main
+compile:
+	g++ -o main main.cpp -ggdb -lm -lcrypt -O2 -pipe -ansi -DONLINE_JUDGE
+
+run:
+	./runtests.sh
+
+purge:
+	rm -f main *.out
