@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cstdio>
 #include <cmath>
+#include <cstdlib>
+#include <ctime>
 #include <cassert>
 
 using namespace std;
@@ -24,16 +26,18 @@ class Vector3 {
     Vector3 operator+(const Vector3 & P) {
       Vector3 Q(P);
       Q.axpy(1,*this);
-      return P;
+      return Q;
     }
     Vector3 operator-(const Vector3 & P) {
       Vector3 Q(*this);
       Q.axpy(-1,P);
+      return Q;
     }
     Vector3 plus (double a) {
       Vector3 Q(*this);
       for (size_t i = 0; i < 3; i++)
         Q.v[i] *= a;
+      return Q;
     }
     double sum () {
       double a = 0;
@@ -222,23 +226,48 @@ float projs (Vector3 *P, Vector3 *Q) {
   return sqrt(d);
 }
 
+float drand () {
+  float a = rand()%1000;
+  a = 2*a/1000.0 - 1;
+  return a;
+}
+
+bool will_be_feasible (const Vector3 & s, float step, const Vector3 & d) {
+  float sum = 0.0, aux;
+  for (size_t i = 0; i < 3; i++) {
+    aux = s.get(i) + step*d.get(i);
+    if (aux < 0)
+      return false;
+    else
+      sum += aux;
+  }
+  if (sum <= 1)
+    return true;
+  return false;
+}
+
 float solve (Vector3 *P, Vector3 *Q) {
   Vector3 *SDs;
-  SDs = new Vector3[8];
-  SDs[0].set(1, 0, 0);
-  SDs[1].set(0, 1, 0);
-  SDs[2].set(0, 0, 1);
-  SDs[3].set(-1, 0, 0);
-  SDs[4].set(0, -1, 0);
-  SDs[5].set(0, 0, -1);
-  SDs[6].set(-1, -1, 0);
-  SDs[7].set(-1, 0, -1);
-  SDs[8].set(0, -1, -1);
+  size_t n = 6;
+  SDs = new Vector3[n];
+//  SDs[0].set(1, 0, 0);
+//  SDs[1].set(0, 1, 0);
+//  SDs[2].set(0, 0, 1);
+  for (size_t i = 0; i < n; i++)
+    SDs[i].set(drand(), drand(), drand());
+//  SDs[3].set(-1, 0, 0);
+//  SDs[4].set(0, -1, 0);
+//  SDs[5].set(0, 0, -1);
+//  SDs[3].set(-1, 1, -1);
+//  SDs[4].set(-1, -1, 1);
+//  SDs[5].set(1, -1, -1);
+//  SDs[6].set(1, -1, 1);
+//  SDs[7].set(-1, 1, 1);
+//  SDs[8].set(1, 1, -1);
   for (size_t i = 1; i < 4; i++) {
     P[i].axpy(-1, P[0]);
-    Q[i].axpy(-1, P[0]);
+    Q[i].axpy(-1, Q[0]);
   }
-  size_t n = 8;
   double step=1.0;
   double d=1e9, t=0.0;
   Vector3 a(0,0,0), b(0,0,0);
@@ -249,57 +278,66 @@ float solve (Vector3 *P, Vector3 *Q) {
 //  for (size_t i = 0; i < 3; i++)
 //    cout << b.get(i) << ",";
 //  cout << endl;
-  while (step > 2e-9) {
+  while (step > 2e-8) {
     bool decreased = false;
+    size_t besti = 0;
     for (size_t i = 0; i < n; i++) {
-      a.axpy(step,SDs[i]);
-      if ( (a.get(0) < 0) || (a.get(1) < 0) || (a.get(2) < 0) || (a.sum() > 1) ) {
-        a.axpy(-step,SDs[i]);
+      if (will_be_feasible(a, step, SDs[i]))
+        a.axpy(step,SDs[i]);
+      else
         continue;
-      }
-      direction = P[0];
-      direction.axpy(-1,Q[0]);
+//      direction = P[0];
+//      direction.axpy(-1,Q[0]);
 //      direction = P[0] - Q[0];
-      for (size_t j = 0; j < 3; j++) {
-        direction.axpy(a.get(j), P[j+1]);
-        direction.axpy(-b.get(j), Q[j+1]);
-      }
-      t = direction.sqrnorm();
+//      for (size_t j = 0; j < 3; j++) {
+//        direction.axpy(a.get(j), P[j+1]);
+//        direction.axpy(-b.get(j), Q[j+1]);
+//      }
+//      t = direction.sqrnorm();
+      t = calc_sqrdist(P,Q,a,b);
       if (t < d) {
+        besti = i;
         d = t;
         decreased = true;
-        break;
+        a.axpy(-step,SDs[i]);
+//        break;
       } else
         a.axpy(-step,SDs[i]);
     }
-    for (size_t i = 0; decreased == false, i < n; i++) {
-      b.axpy(step,SDs[i]);
-      if ( (b.get(0) < 0) || (b.get(1) < 0) || (b.get(2) < 0) || (b.sum() > 1) ) {
-        b.axpy(-step,SDs[i]);
+    for (size_t i = 0; i < n; i++) {
+      if (will_be_feasible(b, step, SDs[i]))
+        b.axpy(step,SDs[i]);
+      else
         continue;
-      }
-      direction = P[0];
-      direction.axpy(-1,Q[0]);
+//      direction = P[0];
+//      direction.axpy(-1,Q[0]);
 //      direction = P[0] - Q[0];
-      for (size_t j = 0; j < 3; j++) {
-        direction.axpy(a.get(j), P[j+1]);
-        direction.axpy(-b.get(j), Q[j+1]);
-      }
-      t = direction.sqrnorm();
+//      for (size_t j = 0; j < 3; j++) {
+//        direction.axpy(a.get(j), P[j+1]);
+//        direction.axpy(-b.get(j), Q[j+1]);
+//      }
+//      t = direction.sqrnorm();
+      t = calc_sqrdist(P,Q,a,b);
       if (t < d) {
+        besti = n + i;
+        b.axpy(-step,SDs[i]);
         d = t;
         decreased = true;
-        break;
+//        break;
       } else 
         b.axpy(-step,SDs[i]);
     }
     if (!decreased)
       step /= 2;
     else {
+      if (besti < n)
+        a.axpy(step, SDs[besti]);
+      else
+        b.axpy(step, SDs[besti - n]);
 //      for (size_t i = 0; i < 3; i++)
-//        cout << a.get(i) << ",";
+//        printf("%5.2lf,", a.get(i));
 //      for (size_t i = 0; i < 3; i++)
-//        cout << b.get(i) << ",";
+//        printf("%5.2lf,", b.get(i));
 //      cout << endl;
     }
   }
@@ -311,6 +349,7 @@ int main () {
   int x, y, z;
   float d = 0.0;
   Vector3 P[4], Q[4];
+  srand(time(0));
 
   cin >> T;
   while (T > 0) {
