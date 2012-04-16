@@ -9,7 +9,7 @@ using namespace std;
 
 class Vector3 {
   public:
-    Vector3 (float a = 0, float b = 0, float c = 0) {
+    Vector3 (double a = 0, double b = 0, double c = 0) {
       v[0] = a;
       v[1] = b;
       v[2] = c;
@@ -56,27 +56,27 @@ class Vector3 {
       v[1] = 0;
       v[2] = 0;
     }
-    void set (float a, float b, float c) {
+    void set (double a, double b, double c) {
       v[0] = a;
       v[1] = b;
       v[2] = c;
     }
-    float get (int i) const {
+    double get (int i) const {
       return v[i];
     }
-    float sqrdist (const Vector3 & P) {
-      float d = pow(v[0] - P.get(0), 2) +
+    double sqrdist (const Vector3 & P) {
+      double d = pow(v[0] - P.get(0), 2) +
         pow(v[1] - P.get(1), 2) +
         pow(v[2] - P.get(2), 2);
       return d;
     }
-    float dist (const Vector3 & P) {
-      float d = pow(v[0] - P.get(0), 2) +
+    double dist (const Vector3 & P) {
+      double d = pow(v[0] - P.get(0), 2) +
         pow(v[1] - P.get(1), 2) +
         pow(v[2] - P.get(2), 2);
       return sqrt(d);
     }
-    void axpy (float alpha, const Vector3 & P) {
+    void axpy (double alpha, const Vector3 & P) {
       for (size_t i = 0; i < 3; i++)
         v[i] += alpha*P.get(i);
     }
@@ -90,36 +90,36 @@ class Vector3 {
       P3.axpy(-1,P1);
       cross(P2, P3);
     }
-    float norm () const {
-      float n = 0;
+    double norm () const {
+      double n = 0;
       for (size_t i = 0; i < 3; i++)
         n += v[i]*v[i];
       return sqrt(n);
     }
-    float sqrnorm () const {
-      float n = 0.0;
+    double sqrnorm () const {
+      double n = 0.0;
       for (size_t i = 0; i < 3; i++)
         n += v[i]*v[i];
       return n;
     }
-    float dot (const Vector3 & P) const {
-      float d = 0.0;
+    double dot (const Vector3 & P) const {
+      double d = 0.0;
       for (size_t i = 0; i < 3; i++)
         d += v[i]*P.get(i);
       return d;
     }
   private:
-    float v[3];
+    double v[3];
 };
 
-float distance_to_plane (const Vector3 & normal, const Vector3 & planePoint, 
+double distance_to_plane (const Vector3 & normal, const Vector3 & planePoint, 
     const Vector3 & point) {
-  float d = fabs( normal.dot(planePoint) - normal.dot(point) );
+  double d = fabs( normal.dot(planePoint) - normal.dot(point) );
   return d/normal.norm();
 }
 
-float upper_bound (Vector3 *P, Vector3 *Q) {
-  float d = 1e9, t = 0.0;
+double upper_bound (Vector3 *P, Vector3 *Q) {
+  double d = 1e9, t = 0.0;
   for (size_t i = 0; i < 4; i++) {
     for (size_t j = 0; j < 4; j++) {
       t = P[i].sqrdist(Q[j]);
@@ -130,9 +130,9 @@ float upper_bound (Vector3 *P, Vector3 *Q) {
   return sqrt(d);
 }
 
-float grid_all_combination (Vector3 *P, Vector3 *Q) {
-  float d = 1e9, t = 0.0;
-  float step = 0.025;
+double grid_all_combination (Vector3 *P, Vector3 *Q) {
+  double d = 1e9, t = 0.0;
+  double step = 0.025;
   Vector3 distance;
   for (size_t i = 1; i < 4; i++) {
     P[i].axpy(-1, P[0]);
@@ -140,12 +140,12 @@ float grid_all_combination (Vector3 *P, Vector3 *Q) {
   }
   Vector3 b(P[0]);
   b.axpy(-1, Q[0]);
-  for (    float a1 = 0; a1 <= 1.0; a1 += step) {
-    for (  float a2 = 0; a2 <= 1.0 - a1; a2 += step) {
-      for (float a3 = 0; a3 <= 1.0 - a1 - a2; a3 += step) {
-        for (    float b1 = 0; b1 <= 1.0; b1 += step) {
-          for (  float b2 = 0; b2 <= 1.0 - b1; b2 += step) {
-            for (float b3 = 0; b3 <= 1.0 - b1 - b2; b3 += step) {
+  for (    double a1 = 0; a1 <= 1.0; a1 += step) {
+    for (  double a2 = 0; a2 <= 1.0 - a1; a2 += step) {
+      for (double a3 = 0; a3 <= 1.0 - a1 - a2; a3 += step) {
+        for (    double b1 = 0; b1 <= 1.0; b1 += step) {
+          for (  double b2 = 0; b2 <= 1.0 - b1; b2 += step) {
+            for (double b3 = 0; b3 <= 1.0 - b1 - b2; b3 += step) {
               distance = P[0];
               distance.axpy(a1, P[1]);
               distance.axpy(a2, P[2]);
@@ -166,7 +166,7 @@ float grid_all_combination (Vector3 *P, Vector3 *Q) {
   return sqrt(d);
 }
 
-float calc_sqrdist(Vector3 *P, Vector3 *Q, const Vector3 & a, const Vector3 & b) {
+double calc_sqrdist(Vector3 *P, Vector3 *Q, const Vector3 & a, const Vector3 & b) {
   Vector3 distance = P[0];
   distance.axpy(-1, Q[0]);
   for (size_t i = 0; i < 3; i++) {
@@ -176,9 +176,9 @@ float calc_sqrdist(Vector3 *P, Vector3 *Q, const Vector3 & a, const Vector3 & b)
   return distance.sqrnorm();
 }
 
-float projs (Vector3 *P, Vector3 *Q) {
+double projs (Vector3 *P, Vector3 *Q) {
   Vector3 c1(0,0,0), c2(0,0,0);
-  float d = 1e9, t = 0.0;
+  double d = 1e9, t = 0.0;
   for (size_t i = 0; i < 4; i++) {
     c1.axpy(0.25, P[i]);
     c2.axpy(0.25, Q[i]);
@@ -226,14 +226,14 @@ float projs (Vector3 *P, Vector3 *Q) {
   return sqrt(d);
 }
 
-float drand () {
-  float a = rand()%1000;
+double drand () {
+  double a = rand()%1000;
   a = 2*a/1000.0 - 1;
   return a;
 }
 
-bool will_be_feasible (const Vector3 & s, float step, const Vector3 & d) {
-  float sum = 0.0, aux;
+bool will_be_feasible (const Vector3 & s, double step, const Vector3 & d) {
+  double sum = 0.0, aux;
   for (size_t i = 0; i < 3; i++) {
     aux = s.get(i) + step*d.get(i);
     if (aux < 0)
@@ -246,10 +246,10 @@ bool will_be_feasible (const Vector3 & s, float step, const Vector3 & d) {
   return false;
 }
 
-float solve (Vector3 *P, Vector3 *Q) {
+double solve (Vector3 *P, Vector3 *Q) {
   Vector3 *SDs;
   size_t n = 15;
-  float athird=1.0/3.0;
+  double athird=1.0/3.0;
   SDs = new Vector3[n];
 //  for (size_t i = 0; i < n; i++)
 //    SDs[i].set(drand(), drand(), drand());
@@ -325,7 +325,7 @@ float solve (Vector3 *P, Vector3 *Q) {
 int main () {
   size_t T = 0;
   int x, y, z;
-  float d = 0.0;
+  double d = 0.0;
   Vector3 P[4], Q[4];
   srand(time(0));
 
