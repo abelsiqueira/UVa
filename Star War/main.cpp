@@ -132,7 +132,7 @@ double upper_bound (Vector3 *P, Vector3 *Q) {
 
 double grid_all_combination (Vector3 *P, Vector3 *Q) {
   double d = 1e9, t = 0.0;
-  double step = 0.025;
+  double step = 0.025/2;
   Vector3 distance;
   for (size_t i = 1; i < 4; i++) {
     P[i].axpy(-1, P[0]);
@@ -273,9 +273,10 @@ double solve (Vector3 *P, Vector3 *Q) {
     P[i].axpy(-1, P[0]);
     Q[i].axpy(-1, Q[0]);
   }
-  double step=1.0, minstep = 2e-6;
+  double step=1.0, minstep = 2e-4, divideby = 2.0;
   double d=1e9, t=0.0;
-  Vector3 a(0.25,0.25,0.25), b(0.25,0.25,0.25);
+  Vector3 a(0.0,0.0,0.0), b(0.0,0.0,0.0);
+//  Vector3 a(0.25,0.25,0.25), b(0.25,0.25,0.25);
   Vector3 direction(0,0,0);
   bool fast = true;
 
@@ -311,7 +312,7 @@ double solve (Vector3 *P, Vector3 *Q) {
       b.axpy(-step,SDs[i]);
     }
     if (!decreased) {
-      step = step/2.0;
+      step = step/divideby;
     } else {
       if (besti < n)
         a.axpy(step, SDs[besti]);
@@ -341,6 +342,7 @@ int main () {
       Q[i].set(x,y,z);
     }
     d = solve (P, Q);
+//    d = grid_all_combination (P, Q);
     printf ("%0.2f\n", d);
   }
 }
