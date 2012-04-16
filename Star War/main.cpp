@@ -275,7 +275,7 @@ float solve (Vector3 *P, Vector3 *Q) {
   }
   double step=1.0, minstep = 2e-6;
   double d=1e9, t=0.0;
-  Vector3 a(0,0,0), b(0,0,0);
+  Vector3 a(0.25,0.25,0.25), b(0.25,0.25,0.25);
   Vector3 direction(0,0,0);
   bool fast = true;
 
