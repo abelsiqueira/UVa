@@ -36,6 +36,11 @@ A solution was found dividing the interval [0,1] into several parts
 and evaluating each variable in these points.
 This solution is terrible and slow.
 The mathematical approach may be too slow.
+
+Submit 1
+- Wrong Answer
+Submit 2
+- Wrong Answer
  
  
 High School Physics
@@ -66,5 +71,23 @@ Result: A*E
 
 Submit 1
 - Accepted
+ 
+ 
+190 - Circle
+---------------------------
+Submit 1
+- Wrong Answer (Due to output format)
+Submit 2
+- Accepted
+ 
+ 
+Palindromes
+---------------------------
+Submit 1
+- Wrong answer
+Submit 2
+- Wrong answer
+Submit 3
+- Accepted answer. (Was not resetting booleans and forgot endline).
  
  
