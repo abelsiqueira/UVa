@@ -5,7 +5,7 @@
 using namespace std;
 
 int main () {
-  size_t n, k, d, r, cigars;
+  unsigned long int n, k, d, r, cigars;
   while (!cin.eof()) {
     cin >> n >> k;
     if (cin.eof())
@@ -17,7 +17,7 @@ int main () {
     while (n > 0) {
       cigars += n;
       d = (n + r)/k;
-      r = n - d*k;
+      r = n + r - d*k;
       n = d;
     }
     cout << cigars << endl;
